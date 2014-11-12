@@ -35,13 +35,16 @@ data Bool : Set where
 -- Boolean negation
 -- Note: the underscores say where the arguments should go
 ¬_ : Bool → Bool
-¬ x = {!!}
+¬ true = false
+¬ false = true
 
 _∧_ : Bool → Bool → Bool
-x ∧ y = {!!}
+true ∧ y = y
+false ∧ y = false
 
 _∨_ : Bool → Bool → Bool
-x ∨ y = {!!}
+true ∨ y = true
+false ∨ y = y
 
 if_then_else_ : ∀ {ℓ} {A : Set ℓ} → Bool → A → A → A
 if true then x else y = x
@@ -61,17 +64,20 @@ data _≡_ {ℓ} {A : Set ℓ} : A → A → Set ℓ where
 
 -- Try to prove this by case splitting on b
 ¬¬-elim : (b : Bool) → ¬ ¬ b ≡ b
-¬¬-elim b = {!!}
+¬¬-elim true = refl
+¬¬-elim false = refl
 
 ∧-same : (b : Bool) → b ∧ b ≡ b
-∧-same b = {!!}
+∧-same true = refl
+∧-same false = refl
 
 -- Hint: you can also case split on an equality proof
 ≡-sym : (b1 b2 : Bool) → b1 ≡ b2 → b2 ≡ b1
-≡-sym b1 b2 eq = {!!}
+≡-sym .b2 b2 refl = refl
 
 ∨-first : (b : Bool) → b ∨ false ≡ true → b ≡ true
-∨-first b eq = {!!} 
+∨-first true refl = refl
+∨-first false () 
 
 
 -- Natural numbers (in unary notation)
@@ -84,17 +90,21 @@ data Nat : Set where
 {-# BUILTIN SUC suc #-}
 
 is-zero : Nat → Bool
-is-zero n = {!!}
+is-zero zero = true
+is-zero (suc n) = false
 
 _+_ : Nat → Nat → Nat
 zero + n = n
 suc m + n = suc (m + n)
 
 min : Nat → Nat → Nat
-min m n = {!!}
+min zero _ = zero
+min _ zero = zero
+min (suc m) (suc n) = min m n
 
 _*_ : Nat → Nat → Nat
-m * n = {!!}
+zero * _ = zero
+suc m * n = n + (m * n)
 
 -- As people, we know that 0 + n = n = n + 0.
 -- The first equality is easy to prove ...
@@ -108,8 +118,14 @@ plus0-right zero = refl
 plus0-right (suc n) rewrite (plus0-right n) = refl
 
 plus-assoc : (k l m : Nat) → k + (l + m) ≡ (k + l) + m
-plus-assoc k l m = {!!}
+plus-assoc zero l m = refl
+plus-assoc (suc k) l m rewrite (plus-assoc k l m) = refl
+
+suc-out : (m n : Nat) → m + suc n ≡ suc (m + n)
+suc-out zero n = refl
+suc-out (suc m) n rewrite (suc-out m n) = refl
 
 -- You might need a helper function for this one
 plus-comm : (m n : Nat) → m + n ≡ n + m
-plus-comm m n = {!!}
+plus-comm zero n rewrite (plus0-right n) = refl
+plus-comm (suc m) n rewrite (suc-out n m) | (plus-comm m n) = refl

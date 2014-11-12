@@ -15,17 +15,21 @@ data Term : Set where
   
 -- Warm-up exercise: calculate the size of a term
 size : Term → Nat
-size = {!!}
+size _ = suc zero
 
 -- Define a predicate that says when a term is a value
 data Value : Term → Set where
   V-True : Value TmTrue
-  -- add more constructors here  
+  V-False : Value TmFalse
 
 -- Define a relatio that says when a term evaluates to another term (in one step)
 data _EvaluatesTo_ : Term → Term → Set where
   E-NotTrue : (TmNot TmTrue) EvaluatesTo (TmFalse)
-  -- add more constructors here
+  E-NotFalse : (TmNot TmFalse) EvaluatesTo (TmTrue)
+  E-AndTrueTrue : (TmAnd TmTrue TmTrue) EvaluatesTo (TmTrue)
+  E-AndTrueFalse : (TmAnd TmTrue TmFalse) EvaluatesTo (TmFalse)
+  E-AndFalseTrue : (TmAnd TmFalse TmTrue) EvaluatesTo (TmFalse)
+  E-AndFalseFalse : (TmAnd TmFalse TmFalse) EvaluatesTo (TmFalse)
 
 -- Logical negation of a type can be expressed as a function to the empty type
 Not : Set → Set
@@ -33,7 +37,12 @@ Not A = A → ⊥
 
 -- Define a term to be normal if it doesn't evaluate to any other term
 Normal : Term → Set
-Normal t = {!!}
+Normal TmTrue = Term
+Normal TmFalse = {!!}
+Normal (TmNot t) = {!!}
+Normal (TmAnd t t₁) = {!!}
+Normal (TmOr t t₁) = {!!}
+Normal (TmIf t t₁ t₂) = {!!}
 
 -- Prove that all values are normal
 values-normal : {t : Term} → Value t → Normal t

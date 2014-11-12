@@ -12,18 +12,20 @@ data Vec (A : Set) : Nat → Set where
 -- If we know that the length of a vector is at least 1,
 -- we can safely take its head and tail.
 head : {A : Set} {n : Nat} → Vec A (suc n) → A
-head v = {!!}
+head (x ∷ _) = x
 
 tail : {A : Set} {n : Nat} → Vec A (suc n) → Vec A n
-tail v = {!!}
+tail (_ ∷ v) = v
 
 -- Concatenation of vectors adds their length together
 _++_ : {A : Set} {m n : Nat} → Vec A m → Vec A n → Vec A (m + n)
-v ++ w = {!!}
+[] ++ w = w
+(x ∷ v) ++ w = x ∷ (v ++ w)
 
 -- Zipping two lists of length n results in another list of length  n
 zip : {A B C : Set} {n : Nat} → (f : A → B → C) → Vec A n → Vec B n → Vec C n
-zip f v w = {!!} 
+zip f [] [] = []
+zip f (v ∷ vs) (w ∷ ws) = f v w ∷ zip f vs ws 
 
 -- Fin n is the type of natural numbers smaller than n
 data Fin : Nat → Set where
@@ -33,4 +35,5 @@ data Fin : Nat → Set where
 -- We can use Fin to safely look up an element in a vector
 -- (without risk of IndexOutOfBoundsExceptions)
 _!_ : {A : Set} {n : Nat} → Vec A n → Fin n → A
-v ! i = {!!}  
+(x ∷ _) ! zero = x
+(_ ∷ v) ! suc i = v ! i  
